@@ -1,0 +1,615 @@
+---
+title: "Cluster-Ethnicity-Passrate"
+author: "Lucas Huang (shua440)"
+date: "12/09/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library("dplyr")
+library("nortest")
+library("car")
+library("PMCMRplus")
+
+ca<-read.csv("J:/Lucas/Ethnicity-Cluster/ALLCLUSTER(2014~2019).csv", header=TRUE)
+
+get_cluster <- function(cluster_id){
+  return (ca%>%filter(CLUSTER_ID == cluster_id))
+}
+
+c1<- get_cluster(1) #1939
+c2<- get_cluster(2) #1133
+c3<- get_cluster(3) #2298
+c4<- get_cluster(4) #2301
+c5<- get_cluster(5) #1228
+c6<- get_cluster(6) #2876
+c7<- get_cluster(7) #2503
+c8<- get_cluster(8) #1597
+c9<- get_cluster(9) #958
+c10<- get_cluster(10) #1727
+c11<- get_cluster(11) #1712
+c12<- get_cluster(12) #705
+c13<- get_cluster(13) #1363
+c14<-get_cluster(14) #2311
+c15<-get_cluster(15) #2269
+c16<- get_cluster(98) #350
+c17<-get_cluster(99) #134
+
+#ch <- ca %>% filter(CLUSTER2019 == 3| CLUSTER2019 == 8|CLUSTER2019 == 9|CLUSTER2019 == 10)
+#cl <- ca %>% filter(CLUSTER2019 == 1| CLUSTER2019 == 6|CLUSTER2019 == 13)
+
+```
+
+
+
+
+```{r, include=FALSE}
+#Assumption Checks Function
+
+library("nortest")
+#Normality check for large dataset
+norm_check_l <- function (cluster){
+
+  norm1<-lillie.test(cluster$PASSRATE)
+  norm2<- boxplot(cluster$PASSRATE~cluster$ETHNICITY,ylab="Pass   Rate",xlab="Ethnicity",col=c("blue","yellow","green"))
+
+  result<- list(norm1,norm2)
+
+  return(result)
+
+}
+
+#Normality check for large dataset
+norm_check_s <- function (cluster){
+
+  norm1<-shapiro.test(cluster$PASSRATE)
+  norm2<- boxplot(cluster$PASSRATE~cluster$ETHNICITY,ylab="Pass   Rate",xlab="Ethnicity",col=c("blue","yellow","green"))
+
+  result<- list(norm1, norm2)
+
+  return(result)
+
+}
+
+
+library("car")
+#Homogeneity check
+homo_check <- function(cluster){
+homo1<-leveneTest(cluster$PASSRATE,cluster$ETHNICITY,location=c("mean"))
+homo2<-leveneTest(cluster$PASSRATE,cluster$ETHNICITY,location=c("median"))
+homo3<-leveneTest(cluster$PASSRATE,cluster$ETHNICITY,location=c("trim.mean"))
+
+result <- list(homo1, homo2, homo3)
+return (result)
+}
+
+
+
+
+
+```
+
+
+
+
+## Cluster 1
+
+Normality Check:
+
+```{r, echo=FALSE}
+
+norm_check_l(c1)
+
+```
+
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Outliers:
+
+```{r, echo=FALSE}
+
+#outliers
+outliersx1<-boxplot(c1$PASSRATE~c1$ETHNICITY, data = c1,
+        ylab="Pass Rate",xlab="Ethnicity",
+        main = "compare", col = c("#00AFBB", "#E7B800", "#FC4E07")
+         )$out
+
+c1<-c1[-which(c1$PASSRATE %in% outliersx1),]
+
+```
+
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+library("car")
+homo_check(c1)
+
+```
+
+All p-values are less than 0.05 (level of significance), the results are significant. Homogeneity is not met.
+However we still can do ANOVA by accepting assumption that variances not the same and choose Tamhane’s T2.
+
+```{r}
+library("PMCMRplus")
+fit <- aov(PASSRATE ~ ETHNICITY, data=c1)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c1))
+```
+
+
+
+## Cluster 2
+
+Normality Check:
+
+```{r, echo=FALSE}
+
+norm_check_l(c2)
+
+```
+
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Outliers:
+
+```{r, echo=FALSE}
+
+#outliers
+outliersx2<-boxplot(c2$PASSRATE~c2$ETHNICITY, data = c2,
+        ylab="Pass Rate",xlab="Ethnicity",
+        main = "compare", col = c("#00AFBB", "#E7B800", "#FC4E07")
+         )$out
+
+c2<-c2[-which(c2$PASSRATE %in% outliersx2),]
+
+```
+
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c2)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are significant. Homogeneity is met.
+As a result, we use Tamhane’s T2.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c2)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c2))
+```
+
+
+##Cluster 3
+
+Normality Check:
+
+```{r, echo=FALSE}
+
+norm_check_l(c3)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Outliers:
+
+```{r, echo=FALSE}
+
+outliersx3<-boxplot(c3$PASSRATE~c3$ETHNICITY, data = c3,
+        ylab="Pass Rate",xlab="Ethnicity",
+        main = "compare", col = c("#00AFBB", "#E7B800", "#FC4E07")
+         )$out
+print(outliersx3)
+c3<-c3[-which(c3$PASSRATE %in% outliersx3),]
+
+```
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c3)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are not significant. Homogeneity is met.
+As a result, we use Tukey multiple pairwise-comparisons.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c3)
+summary(fit) 
+TukeyHSD(fit) 
+```
+
+## Cluster 4
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_l(c4)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Outliers:
+
+```{r, echo=FALSE}
+
+outliersx4<-boxplot(c4$PASSRATE~c4$ETHNICITY, data = c4,
+        ylab="Pass Rate",xlab="Ethnicity",
+        main = "compare", col = c("#00AFBB", "#E7B800", "#FC4E07")
+         )$out
+print(outliersx4)
+c4<-c4[-which(c4$PASSRATE %in% outliersx4),]
+
+```
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c4)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are significant. Homogeneity is met.
+As a result, we use Tamhane’s T2.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c4)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c4)) 
+
+```
+
+
+## Cluster 5
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_l(c5)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Outliers:
+
+```{r, echo=FALSE}
+
+outliersx5<-boxplot(c5$PASSRATE~c5$ETHNICITY, data = c5,
+        ylab="Pass Rate",xlab="Ethnicity",
+        main = "compare", col = c("#00AFBB", "#E7B800", "#FC4E07")
+         )$out
+print(outliersx5)
+c5<-c5[-which(c5$PASSRATE %in% outliersx5),]
+
+```
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c5)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are significant. Homogeneity is met.
+As a result, we use Tamhane’s T2.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c5)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c5)) 
+```
+
+
+
+## Cluster 6
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_l(c6)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c6)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are significant. Homogeneity is met.
+As a result, we use Tamhane’s T2.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c6)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c6))
+```
+
+## Cluster 7
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_l(c7)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c7)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are significant. Homogeneity is met.
+As a result, we use Tamhane’s T2.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c7)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c7))
+```
+
+
+## Cluster8
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_l(c8)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c8)
+
+```
+
+All p-values are greater than 0.05 (level of significance), the results are not significant. Homogeneity is met.
+As a result, we use Tukey multiple pairwise-comparisons.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c8)
+summary(fit) 
+TukeyHSD(fit) 
+```
+
+
+## Cluster 9
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_l(c9)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c9)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are significant. Homogeneity is met.
+As a result, we use Tamhane’s T2.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c9)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c9))
+
+```
+
+
+Cluster 10
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_l(c10)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c10)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are not significant. Homogeneity is met.
+As a result, we use Tukey multiple pairwise-comparisons.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c10)
+summary(fit) 
+TukeyHSD(fit) 
+```
+
+
+## Cluster 11
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_l(c11)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c11)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are significant. Homogeneity is met.
+As a result, we use Tamhane’s T2.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c11)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c11))
+
+```
+
+
+
+## Cluster 12
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_l(c12)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c12)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are significant. Homogeneity is met.
+As a result, we use Tamhane’s T2.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c12)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c12))
+
+```
+
+
+
+## Cluster 13
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_l(c13)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c13)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are significant. Homogeneity is met.
+As a result, we use Tamhane’s T2.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c13)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c13))
+
+```
+
+
+
+## Cluster 14
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_l(c14)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c14)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are significant. Homogeneity is met.
+As a result, we use Tamhane’s T2.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c14)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c14))
+
+```
+
+
+
+## Cluster 15
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_l(c15)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c15)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are significant. Homogeneity is met.
+As a result, we use Tamhane’s T2.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c15)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c15))
+
+```
+
+
+
+
+## Cluster 16
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_s(c16)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c16)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are significant. Homogeneity is met.
+As a result, we use Tamhane’s T2.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c16)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c16))
+
+```
+
+
+## Cluster 17
+
+Normality Check:
+
+```{r, echo=FALSE}
+norm_check_s(c17)
+```
+As we can see from the result, p-value< 0.01. The KS tests give  significant results, so the Normality assumption is not satisfied
+
+Homogeneity check:
+
+```{r, echo=FALSE}
+homo_check(c17)
+```
+
+All p-values are greater than 0.05 (level of significance), the results are significant. Homogeneity is met.
+As a result, we use Tamhane’s T2.
+
+```{r}
+fit <- aov(PASSRATE ~ ETHNICITY, data=c17)
+summary(fit) 
+summary(T2 <- tamhaneT2Test(PASSRATE ~ ETHNICITY, data=c17))
+
+```
+
+
+
