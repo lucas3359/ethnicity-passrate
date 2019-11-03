@@ -3,7 +3,9 @@ Goal
 ------
 
 
-#### Trying to find out if three different ethnic groups' pass rates differ among different clusters, especially for lower performance ones
+#### Trying to find out if three different ethnic groups' pass rates differ among different clusters, especially for lower performance ones  
+
+##### -**Ethnicity pass rate by cluster.Rmd**
 
 
 
@@ -52,6 +54,8 @@ Goal
 ------
 
 #### For those Ethnic group - Pacific Islanders (lower pass rates groups)--- Trying to match maseey students (Pacific students) high school`s home address with the CVS files of formal nz road, suburb and city data with corresponding longtitude& latitude information from government website, trying to match  
+
+##### -**addressI(new).R**
 
 ##### Overall Schema of the address(new) R code:
 
