@@ -3,7 +3,6 @@
 
 ## Trying to find out if three different ethnic groups' pass rates differ among different clusters, especially for lower performance ones  
 
-------
 
 ##### [Ethnicity pass rate by cluster.Rmd](https://github.com/lucas3359/ethnicity-passrate/blob/master/Ethnicity%20pass%20rate%20by%20cluster.Rmd)
 
@@ -55,8 +54,8 @@ TukeyHSD()
 ```
 
 
+  
 
-------
 
 ## For those Ethnic group - Pacific Islanders  
 
@@ -64,7 +63,6 @@ TukeyHSD()
 
 #### --- Trying to match maseey students (Pacific students) high school`s home address with the CVS files of formal nz road, suburb and city data with corresponding longtitude& latitude information from government website, trying to match  
 
-------
 
 
 ##### [addressI(new).R](https://github.com/lucas3359/ethnicity-passrate/blob/master/addressI(new).R)
