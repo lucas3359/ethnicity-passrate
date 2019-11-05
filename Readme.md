@@ -77,4 +77,6 @@ TukeyHSD()
 <br/><br/>	
 #### - This is the end user dashboard where the raw data can be compared to the validated data
 
-![alt text](https://github.com/lucas3359/ethnicity-passrate/blob/master/address-schema.png?raw=true)
+<br/><br/>
+
+![alt text](https://github.com/lucas3359/ethnicity-passrate/blob/master/map%20visualization.jpg)
