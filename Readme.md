@@ -79,4 +79,4 @@ TukeyHSD()
 
 <br/><br/>
 
-![alt text](https://github.com/lucas3359/ethnicity-passrate/blob/master/map%20visualization.jpg)
+![alt text](https://github.com/lucas3359/ethnicity-passrate/blob/master/map%20visualization.PNG)
